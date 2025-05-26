@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Tournoi de Course</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 1em; }
+  input, button { padding: 0.5em; margin: 0.3em 0; }
+  ul { list-style-type: none; padding-left: 0; }
+</style>
+</head>
+<body>
+
+<h1>Tournoi de Course</h1>
+
+<div id="saisieParticipants">
+  <label>Nom du participant : </label>
+  <input type="text" id="participantInput" />
+  <button onclick="ajouterParticipant()">Ajouter</button>
+  <button onclick="finSaisie()">Terminer</button>
+
+  <h3>Participants :</h3>
+  <ul id="listeParticipants"></ul>
+</div>
+
+<div id="qualifications" style="display:none;">
+  <h2>Qualifications</h2>
+  <button onclick="lancerQualifs()">Lancer la qualification</button>
+  <pre id="resultatQualif"></pre>
+</div>
+
+<script>
+// Stockage des participants
+const participants = [];
+
+function ajouterParticipant() {
+  const input = document.getElementById('participantInput');
+  const nom = input.value.trim();
+  if (nom) {
+    participants.push(nom);
+    afficherParticipants();
+    input.value = "";
+  }
+}
+
+function afficherParticipants() {
+  const ul = document.getElementById('listeParticipants');
+  ul.innerHTML = "";
+  for (const p of participants) {
+    const li = document.createElement('li');
+    li.textContent = p;
+    ul.appendChild(li);
+  }
+}
+
+function finSaisie() {
+  if (participants.length === 0) {
+    alert("Ajoute au moins un participant !");
+    return;
+  }
+  document.getElementById('saisieParticipants').style.display = "none";
+  document.getElementById('qualifications').style.display = "block";
+}
+
+// Fonction simple de shuffle (mélange)
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// Exemple simplifié : on divise en 2 groupes aléatoires, sans entrer les places manuellement
+function lancerQualifs() {
+  // Mélange
+  shuffle(participants);
+
+  // Divise en 2 groupes pour la qualif
+  const mid = Math.ceil(participants.length / 2);
+  const groupe1 = participants.slice(0, mid);
+  const groupe2 = participants.slice(mid);
+
+  // Classement aléatoire pour chaque groupe (simplifié)
+  const classement1 = [...groupe1].sort(() => Math.random() - 0.5);
+  const classement2 = [...groupe2].sort(() => Math.random() - 0.5);
+
+  const resultatText = `
+Groupe 1: ${classement1.join(", ")}
+Groupe 2: ${classement2.join(", ")}
+`;
+
+  document.getElementById('resultatQualif').textContent = resultatText;
+}
+</script>
+
+</body>
+</html>
