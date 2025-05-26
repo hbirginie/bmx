@@ -1,4 +1,4 @@
-// --- Récupérer les données depuis localStorage
+// Récupérer les données depuis localStorage
 const players = JSON.parse(localStorage.getItem('players') || '[]');
 const raceCount = parseInt(localStorage.getItem('raceCount') || '1');
 const roundCount = parseInt(localStorage.getItem('roundCount') || '1');
@@ -10,7 +10,6 @@ if (players.length === 0) {
 
 const manchesContainer = document.getElementById('manchesContainer');
 const validateBtn = document.getElementById('validateBtn');
-const scoresResult = document.getElementById('scoresResult');
 
 // Fonction pour mélanger un tableau (Fisher-Yates)
 function shuffle(array) {
@@ -22,7 +21,7 @@ function shuffle(array) {
   return arr;
 }
 
-// Fonction pour répartir les joueurs aléatoirement dans R groupes équilibrés
+// Répartir les joueurs aléatoirement dans R groupes équilibrés
 function repartitionAleatoire(players, racesCount) {
   const shuffled = shuffle(players);
   const groupes = Array.from({length: racesCount}, () => []);
@@ -38,7 +37,7 @@ for (let r = 0; r < roundCount; r++) {
   manches.push(repartitionAleatoire(players, raceCount));
 }
 
-// --- Affichage et Drag & Drop ---
+// --- Affichage et Drag & Drop avec SortableJS ---
 
 /**
  * Crée une liste draggable (ul) avec les participants d'une course
@@ -56,55 +55,20 @@ function createDraggableList(participants, mancheId, raceId) {
   participants.forEach((player) => {
     const li = document.createElement('li');
     li.textContent = player;
-    li.draggable = true;
     ul.appendChild(li);
   });
   
-  // Drag & drop events
-  let dragSrcEl = null;
-  
-  ul.addEventListener('dragstart', (e) => {
-    dragSrcEl = e.target;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', e.target.textContent);
-  });
-  
-  ul.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    const afterElement = getDragAfterElement(ul, e.clientY);
-    const dragging = document.querySelector('.dragging');
-    if (!dragging) return;
-    if (afterElement == null) {
-      ul.appendChild(dragging);
-    } else {
-      ul.insertBefore(dragging, afterElement);
-    }
-  });
-  
-  ul.addEventListener('dragend', (e) => {
-    e.target.classList.remove('dragging');
+  // Initialiser SortableJS sur la liste
+  Sortable.create(ul, {
+    animation: 150,
+    ghostClass: 'dragging', // utilise ta classe CSS existante pour l'effet visuel
+    // options supplémentaires si besoin...
   });
   
   return ul;
 }
 
-// Helper pour trouver l'élément après lequel insérer pendant drag
-function getDragAfterElement(container, y) {
-  const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
-  
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-  }, { offset: Number.NEGATIVE_INFINITY }).element || null;
-}
-
-// Affichage complet des manches et races
+// Affichage complet des manches et courses
 function renderManches() {
   manchesContainer.innerHTML = '';
   manches.forEach((manche, mancheIndex) => {
