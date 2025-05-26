@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demi-finales - Canejan BMX Club</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .container {
+      padding: 20px;
+    }
+    .demi {
+      margin-bottom: 30px;
+      border: 2px solid #ff6600;
+      padding: 15px;
+      border-radius: 15px;
+      background: #222;
+    }
+    h2, h3 {
+      color: #ff6600;
+    }
+    ul.draggable-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    ul.draggable-list li {
+      background: #333;
+      margin-bottom: 8px;
+      padding: 10px 15px;
+      border-radius: 25px;
+      cursor: grab;
+      user-select: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 8px #ff66004d;
+      transition: background-color 0.2s ease;
+      min-height: 50px;
+    }
+    ul.draggable-list li.dragging {
+      opacity: 0.6;
+      cursor: grabbing;
+      background-color: #ff6600;
+      box-shadow: 0 4px 12px #ff6600cc;
+    }
+    button#validateBtn {
+      margin-top: 40px;
+      padding: 16px 40px;
+      background: #ff6600;
+      border: none;
+      border-radius: 40px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #121212;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      width: 220px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button#validateBtn:hover {
+      background-color: #ffa040;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Demi-finales</h2>
+    <div class="demi">
+      <h3>Demi-finale 1</h3>
+      <ul id="demi1" class="draggable-list"></ul>
+    </div>
+    <div class="demi">
+      <h3>Demi-finale 2</h3>
+      <ul id="demi2" class="draggable-list"></ul>
+    </div>
+    <button id="validateBtn">Valider</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <script src="demi-finales.js"></script>
+</body>
+</html>

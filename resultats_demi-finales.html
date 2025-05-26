@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Résultats Demi-finales</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff6600;
+      text-align: center;
+    }
+    .results {
+      max-width: 600px;
+      margin: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      border: 1px solid #ff6600;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #ff6600;
+      color: #121212;
+    }
+    button {
+      margin-top: 30px;
+      padding: 16px 40px;
+      background: #ff6600;
+      border: none;
+      border-radius: 40px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #121212;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button:hover {
+      background-color: #ffa040;
+    }
+  </style>
+</head>
+<body>
+  <h1>Résultats des Demi-finales</h1>
+  <div class="results" id="resultsContainer"></div>
+  <button id="createFinalsBtn">Créer les Finales</button>
+
+  <script>
+    const demiResult = JSON.parse(localStorage.getItem('demiFinalesResult') || '{}');
+    const demi1 = demiResult.demi1 || [];
+    const demi2 = demiResult.demi2 || [];
+
+    const scores = {};
+
+    function attribuerPoints(liste) {
+      liste.forEach((nom, index) => {
+        if (!scores[nom]) scores[nom] = 0;
+        scores[nom] += index + 1; // 1 point pour 1er, etc.
+      });
+    }
+
+    attribuerPoints(demi1);
+    attribuerPoints(demi2);
+
+    // Sauvegarde des scores
+    localStorage.setItem('demiFinalesScores', JSON.stringify(scores));
+
+    // Affichage des résultats
+    const container = document.getElementById('resultsContainer');
+    const table = document.createElement('table');
+    table.innerHTML = `<tr><th>Participant</th><th>Place</th></tr>`;
+
+    const sortedResults = Object.entries(scores).sort((a, b) => a[1] - b[1]);
+
+    sortedResults.forEach(([nom, points]) => {
+      table.innerHTML += `<tr><td>${nom}</td><td>${points}</td></tr>`;
+    });
+
+    container.appendChild(table);
+
+    // Création des finales
+    document.getElementById('createFinalsBtn').addEventListener('click', () => {
+      const finaleA = sortedResults.slice(0, 8).map(entry => entry[0]);
+      const finaleB = sortedResults.slice(8).map(entry => entry[0]);
+
+      const finales = {
+        finaleA,
+        finaleB
+      };
+
+      localStorage.setItem('finales', JSON.stringify(finales));
+      window.location.href = 'finales.html';
+    });
+  </script>
+</body>
+</html>

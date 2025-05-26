@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Résultats Finales - Podium</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      color: #ff6600;
+      margin-bottom: 40px;
+    }
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .podium-place {
+      background: #222;
+      border-radius: 15px 15px 0 0;
+      width: 120px;
+      padding: 10px 0;
+      box-shadow: 0 4px 12px #ff660099;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+    }
+    .podium-place.first {
+      height: 220px;
+      background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: #000;
+    }
+    .podium-place.second {
+      height: 170px;
+      background: linear-gradient(180deg, #c0c0c0 0%, #808080 100%);
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #000;
+    }
+    .podium-place.third {
+      height: 140px;
+      background: linear-gradient(180deg, #cd7f32 0%, #8b4513 100%);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #000;
+    }
+    .place-label {
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ff6600;
+    }
+    button#homeBtn {
+      margin-top: 50px;
+      padding: 14px 40px;
+      background: #ff6600;
+      border: none;
+      border-radius: 40px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #121212;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button#homeBtn:hover {
+      background-color: #ffa040;
+    }
+  </style>
+</head>
+<body>
+  <h1>Podium Finale A</h1>
+  <div class="podium" id="podiumContainer">
+    <div class="podium-place second">
+      <div id="secondPlace">--</div>
+      <div class="place-label">2ème</div>
+    </div>
+    <div class="podium-place first">
+      <div id="firstPlace">--</div>
+      <div class="place-label">1er</div>
+    </div>
+    <div class="podium-place third">
+      <div id="thirdPlace">--</div>
+      <div class="place-label">3ème</div>
+    </div>
+  </div>
+
+  <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
+
+  <script>
+    const finalesResult = JSON.parse(localStorage.getItem('finalesResult') || '{}');
+    const finaleA = finalesResult.finaleA || [];
+
+    document.getElementById('firstPlace').textContent = finaleA[0] || "N/A";
+    document.getElementById('secondPlace').textContent = finaleA[1] || "N/A";
+    document.getElementById('thirdPlace').textContent = finaleA[2] || "N/A";
+  </script>
+</body>
+</html>

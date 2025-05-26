@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finales</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #ff6600;
+    }
+    .finale {
+      background: #222;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 12px;
+      border: 2px solid #ff6600;
+      max-width: 600px;
+    }
+    .finale h2 {
+      color: #ff6600;
+    }
+    ul.draggable-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.draggable-list li {
+      background: #333;
+      margin-bottom: 8px;
+      padding: 12px 20px;
+      border-radius: 20px;
+      cursor: grab;
+      user-select: none;
+      color: #fff;
+    }
+    ul.draggable-list li.dragging {
+      opacity: 0.6;
+      background-color: #ff6600;
+    }
+    button {
+      margin-top: 30px;
+      padding: 16px 40px;
+      background: #ff6600;
+      border: none;
+      border-radius: 40px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #121212;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button:hover {
+      background-color: #ffa040;
+    }
+  </style>
+</head>
+<body>
+  <h1>Finales</h1>
+
+  <div class="finale">
+    <h2>Finale A</h2>
+    <ul class="draggable-list" id="finaleA"></ul>
+  </div>
+
+  <div class="finale">
+    <h2>Finale B</h2>
+    <ul class="draggable-list" id="finaleB"></ul>
+  </div>
+
+  <button id="validateBtn">Valider les résultats</button>
+
+  <script src="finales.js"></script>
+</body>
+</html>
