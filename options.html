@@ -20,6 +20,7 @@
 <div style="text-align: center;">
   <p style="margin-bottom: 10px; font-size: 1.2rem;">Nombre de races :</p>
   <div id="raceButtons" style="display: flex; gap: 10px; justify-content: center;">
+    <button class="race-btn" data-value="1">1</button>
     <button class="race-btn" data-value="2">2</button>
     <button class="race-btn" data-value="3">3</button>
     <button class="race-btn" data-value="4">4</button>
@@ -38,7 +39,7 @@
 </div>
 
 
-    <button id="startGameBtn">🚴‍♂️ Création des races</button>
+    <button id="startBtn" style="margin-top: 40px;">🚴‍♂️ Création des races</button>
   </div>
 
   <script>
@@ -71,9 +72,9 @@
             });
         });
 
-        const startGameBtn = document.getElementById('startGameBtn');
+        const startBtn = document.getElementById('startBtn');
 
-        startGameBtn.onclick = () => {
+        startBtn.onclick = () => {
             if (!selectedRace) {
                 alert("Choisis un nombre de races avant de continuer.");
                 return;
@@ -86,7 +87,7 @@
             localStorage.setItem('raceCount', selectedRace);
             localStorage.setItem('roundCount', selectedRound);
 
-            window.location.href = 'game.html';
+            window.location.href = 'manches.html';
         };
     });
   </script>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manches - BMX TIME</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #playerList li {
+      cursor: grab;
+    }
+    #playerList li.dragging {
+      opacity: 0.5;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="btn-container">
+      <button id="shuffleBtn">🔀 Mélanger</button>
+      <button id="validateBtn">✅ Valider</button>
+    </div>
+
+    <div id="info"></div>
+    <ul id="playerList"></ul>
+    <button id="validateBtn">✅ Valider</button>
+  </main>
+
+  <script src="manches.js"></script>
+</body>
+</html>

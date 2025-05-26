@@ -72,14 +72,12 @@ button {
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 4px 8px #ff6600aa;
   transition: background-color 0.3s ease, color 0.3s ease;
   user-select: none;
 }
 button:hover {
   background-color: #ffa040;
   color: #121212;
-  box-shadow: 0 6px 12px #ff9a40cc;
 }
 
 ul#playerList {
@@ -99,18 +97,14 @@ ul#playerList li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px #ff66004d;
   transition: background-color 0.3s ease;
   color: #fff;
-}
-ul#playerList li:hover {
-  background: #ff660033;
 }
 
 ul#playerList button.remove-btn {
   background: transparent;
   border: none;
-  color: #ff3300;
+  color: #ff0000;
   font-weight: 900;
   font-size: 20px;
   cursor: pointer;
@@ -118,7 +112,8 @@ ul#playerList button.remove-btn {
   user-select: none;
 }
 ul#playerList button.remove-btn:hover {
-  color: #ff0000;
+  background: #ff0000;
+  color: #fff;
 }
 
 #playButton {
@@ -128,7 +123,6 @@ ul#playerList button.remove-btn:hover {
   font-size: 20px;
   padding: 16px 40px;
   border-radius: 40px;
-  box-shadow: 0 8px 15px #ff6600cc;
   transition: background-color 0.3s ease;
   user-select: none;
   margin-top: auto;
@@ -137,7 +131,6 @@ ul#playerList button.remove-btn:hover {
 }
 #playButton:hover {
   background-color: #ffa040;
-  box-shadow: 0 10px 20px #ff9a40dd;
 }
 
 /* Responsive */
