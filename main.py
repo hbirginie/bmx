@@ -3,9 +3,9 @@ import random
 
 # === PARAMÈTRES GÉNÉRAUX DE LA COMPÉTITION ===
 
-participants= [ "Liam", "Noah", "Ethan", "Mason", "Logan", "Lucas", "Jackson", "Aiden",
-        "Oliver", "Jacob", "Elijah", "Alexander", "James", "Benjamin", "Daniel", "Matthew",
-        "Jayden", "Michael", "Carter", "Sebastian", "Jack", "Owen"]
+# participants= [ "Liam", "Noah", "Ethan", "Mason", "Logan", "Lucas", "Jackson", "Aiden",
+#         "Oliver", "Jacob", "Elijah", "Alexander", "James", "Benjamin", "Daniel", "Matthew",
+#         "Jayden", "Michael", "Carter", "Sebastian", "Jack", "Owen"]
 
 TAILLE_RACE = 8
 NB_QUALIFIES_PAR_RACE= 4
@@ -224,7 +224,7 @@ def lancer_finales(finales):
 
 if __name__ == "__main__":
     
-    #participants = saisir_participants()
+    participants = saisir_participants()
     print(f"Il y a {len(participants)} participants.")
     races = generer_races(participants)
     #for i in range(len(races)):
