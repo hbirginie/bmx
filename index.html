@@ -1,97 +1,242 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<title>Tournoi de Course</title>
-<style>
-  body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 1em; }
-  input, button { padding: 0.5em; margin: 0.3em 0; }
-  ul { list-style-type: none; padding-left: 0; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BMX TIME - Canejan BMX Club</title>
+  <style>
+    /* Reset et styles de base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212; /* très sombre */
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header img {
+      max-width: 200px;
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(255 102 0 / 0.7);
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-weight: 900;
+      font-size: 3rem;
+      margin: 0;
+      color: #ff6600; /* orange vif */
+      letter-spacing: 3px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+    }
+
+    .input-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 12px 15px;
+      border: 2px solid #ff6600;
+      border-radius: 30px;
+      font-size: 16px;
+      outline: none;
+      background: #1e1e1e;
+      color: #fff;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus {
+      border-color: #ffa040;
+      box-shadow: 0 0 10px #ff6600aa;
+      background: #292929;
+    }
+
+    button {
+      background: #ff6600;
+      color: #121212;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px #ff6600aa;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #ffa040;
+      color: #121212;
+      box-shadow: 0 6px 12px #ff9a40cc;
+    }
+
+    ul#playerList {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 40px;
+    }
+
+    ul#playerList li {
+      background: #222222;
+      margin-bottom: 10px;
+      padding: 14px 20px;
+      border-radius: 30px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px #ff66004d;
+      transition: background-color 0.3s ease;
+      color: #fff;
+    }
+    ul#playerList li:hover {
+      background: #ff660033;
+    }
+
+    ul#playerList button.remove-btn {
+      background: transparent;
+      border: none;
+      color: #ff3300;
+      font-weight: 900;
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    ul#playerList button.remove-btn:hover {
+      color: #ff0000;
+    }
+
+    #playButton {
+      background-color: #ff6600;
+      color: #121212;
+      font-weight: 900;
+      font-size: 20px;
+      padding: 16px 40px;
+      border-radius: 40px;
+      box-shadow: 0 8px 15px #ff6600cc;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      margin-top: auto;
+      width: 200px;
+      text-align: center;
+    }
+    #playButton:hover {
+      background-color: #ffa040;
+      box-shadow: 0 10px 20px #ff9a40dd;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: 20px 10px;
+      }
+      .input-container, ul#playerList {
+        max-width: 100%;
+      }
+      #playButton {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Tournoi de Course</h1>
+  <header>
+    <!-- Remplace le lien ci-dessous par le chemin de ton image ou une URL -->
+    <img src="logo.png" alt="Canejan BMX Club Logo" />
+    <h1>BMX TIME</h1>
+  </header>
 
-<div id="saisieParticipants">
-  <label>Nom du participant : </label>
-  <input type="text" id="participantInput" />
-  <button onclick="ajouterParticipant()">Ajouter</button>
-  <button onclick="finSaisie()">Terminer</button>
+  <div class="input-container">
+    <input type="text" id="playerNameInput" placeholder="Nom du joueur..." />
+    <button id="addBtn">+ Ajouter</button>
+  </div>
 
-  <h3>Participants :</h3>
-  <ul id="listeParticipants"></ul>
-</div>
+  <ul id="playerList"></ul>
 
-<div id="qualifications" style="display:none;">
-  <h2>Qualifications</h2>
-  <button onclick="lancerQualifs()">Lancer la qualification</button>
-  <pre id="resultatQualif"></pre>
-</div>
+  <button id="playButton">▶️ Play</button>
 
-<script>
-// Stockage des participants
-const participants = [];
+  <script>
+    const players = [];
+    const input = document.getElementById('playerNameInput');
+    const playerList = document.getElementById('playerList');
+    const addBtn = document.getElementById('addBtn');
+    const playBtn = document.getElementById('playButton');
 
-function ajouterParticipant() {
-  const input = document.getElementById('participantInput');
-  const nom = input.value.trim();
-  if (nom) {
-    participants.push(nom);
-    afficherParticipants();
-    input.value = "";
-  }
-}
+    function renderPlayers() {
+      playerList.innerHTML = '';
+      players.forEach((player, idx) => {
+        const li = document.createElement('li');
+        li.textContent = `${idx + 1}. ${player}`;
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '✖';
+        removeBtn.classList.add('remove-btn');
+        removeBtn.title = "Supprimer ce joueur";
+        removeBtn.onclick = () => {
+          players.splice(idx, 1);
+          renderPlayers();
+        };
+        li.appendChild(removeBtn);
+        playerList.appendChild(li);
+      });
+    }
 
-function afficherParticipants() {
-  const ul = document.getElementById('listeParticipants');
-  ul.innerHTML = "";
-  for (const p of participants) {
-    const li = document.createElement('li');
-    li.textContent = p;
-    ul.appendChild(li);
-  }
-}
+    addBtn.onclick = () => {
+      const name = input.value.trim();
+      if (name === '') {
+        alert("Le nom ne peut pas être vide.");
+        return;
+      }
+      if (players.includes(name)) {
+        alert("Ce joueur est déjà ajouté.");
+        return;
+      }
+      players.push(name);
+      input.value = '';
+      input.focus();
+      renderPlayers();
+    };
 
-function finSaisie() {
-  if (participants.length === 0) {
-    alert("Ajoute au moins un participant !");
-    return;
-  }
-  document.getElementById('saisieParticipants').style.display = "none";
-  document.getElementById('qualifications').style.display = "block";
-}
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addBtn.click();
+      }
+    });
 
-// Fonction simple de shuffle (mélange)
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+    playBtn.onclick = () => {
+      if (players.length === 0) {
+        alert("Ajoute au moins un joueur avant de commencer.");
+        return;
+      }
+      alert(`Début du jeu avec : ${players.join(', ')}`);
+      // ici tu peux lancer une autre page ou la logique JS du jeu
+    };
 
-// Exemple simplifié : on divise en 2 groupes aléatoires, sans entrer les places manuellement
-function lancerQualifs() {
-  // Mélange
-  shuffle(participants);
-
-  // Divise en 2 groupes pour la qualif
-  const mid = Math.ceil(participants.length / 2);
-  const groupe1 = participants.slice(0, mid);
-  const groupe2 = participants.slice(mid);
-
-  // Classement aléatoire pour chaque groupe (simplifié)
-  const classement1 = [...groupe1].sort(() => Math.random() - 0.5);
-  const classement2 = [...groupe2].sort(() => Math.random() - 0.5);
-
-  const resultatText = `
-Groupe 1: ${classement1.join(", ")}
-Groupe 2: ${classement2.join(", ")}
-`;
-
-  document.getElementById('resultatQualif').textContent = resultatText;
-}
-</script>
+    // Focus auto sur input au chargement
+    input.focus();
+  </script>
 
 </body>
 </html>
