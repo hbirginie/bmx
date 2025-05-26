@@ -161,3 +161,7 @@ ul#playerList button.remove-btn:hover {
   background: #ff6600;
   color: #121212;
 }
+
+.dragging {
+  opacity: 0.5;
+}

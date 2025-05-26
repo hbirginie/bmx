@@ -7,7 +7,6 @@ let players = JSON.parse(localStorage.getItem('players')) || [];
 const raceCount = parseInt(localStorage.getItem('raceCount')) || 0;
 const roundCount = parseInt(localStorage.getItem('roundCount')) || 0;
 
-// Afficher les infos manches et tours
 infoDiv.innerHTML = `<p><strong>Manches (Races) :</strong> ${raceCount} &nbsp;&nbsp; <strong>Tours (Rounds) :</strong> ${roundCount}</p>`;
 
 function shuffle(array) {
@@ -22,7 +21,6 @@ function renderPlayers() {
   players.forEach((name, index) => {
     const li = document.createElement('li');
     li.textContent = `${index + 1}. ${name}`;
-    li.setAttribute('draggable', true);
     playerList.appendChild(li);
   });
 
@@ -30,28 +28,9 @@ function renderPlayers() {
 }
 
 function enableDragAndDrop() {
-  let draggedEl = null;
-
-  playerList.querySelectorAll('li').forEach(li => {
-    li.addEventListener('dragstart', () => {
-      draggedEl = li;
-      li.classList.add('dragging');
-    });
-
-    li.addEventListener('dragend', () => {
-      draggedEl = null;
-      li.classList.remove('dragging');
-    });
-
-    li.addEventListener('dragover', e => {
-      e.preventDefault();
-      const target = e.target.closest('li');
-      if (target && target !== draggedEl) {
-        const rect = target.getBoundingClientRect();
-        const next = (e.clientY - rect.top) > (rect.height / 2);
-        playerList.insertBefore(draggedEl, next ? target.nextSibling : target);
-      }
-    });
+  Sortable.create(playerList, {
+    animation: 150,
+    ghostClass: 'dragging',
   });
 }
 
