@@ -1,0 +1,170 @@
+/* Reset et styles de base */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0; padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #121212;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+header img {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(255 102 0 / 0.7);
+  margin-bottom: 15px;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 3rem;
+  margin: 0;
+  color: #ff6600;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.input-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 400px;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 2px solid #ff6600;
+  border-radius: 30px;
+  font-size: 16px;
+  outline: none;
+  background: #1e1e1e;
+  color: #fff;
+  transition: border-color 0.3s ease;
+}
+input[type="text"]:focus {
+  border-color: #ffa040;
+  box-shadow: 0 0 10px #ff6600aa;
+  background: #292929;
+}
+
+button {
+  background: #ff6600;
+  color: #121212;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px #ff6600aa;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  user-select: none;
+}
+button:hover {
+  background-color: #ffa040;
+  color: #121212;
+  box-shadow: 0 6px 12px #ff9a40cc;
+}
+
+ul#playerList {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 40px;
+}
+
+ul#playerList li {
+  background: #222222;
+  margin-bottom: 10px;
+  padding: 14px 20px;
+  border-radius: 30px;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px #ff66004d;
+  transition: background-color 0.3s ease;
+  color: #fff;
+}
+ul#playerList li:hover {
+  background: #ff660033;
+}
+
+ul#playerList button.remove-btn {
+  background: transparent;
+  border: none;
+  color: #ff3300;
+  font-weight: 900;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+ul#playerList button.remove-btn:hover {
+  color: #ff0000;
+}
+
+#playButton {
+  background-color: #ff6600;
+  color: #121212;
+  font-weight: 900;
+  font-size: 20px;
+  padding: 16px 40px;
+  border-radius: 40px;
+  box-shadow: 0 8px 15px #ff6600cc;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  margin-top: auto;
+  width: 200px;
+  text-align: center;
+}
+#playButton:hover {
+  background-color: #ffa040;
+  box-shadow: 0 10px 20px #ff9a40dd;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  body {
+    padding: 20px 10px;
+  }
+  .input-container, ul#playerList {
+    max-width: 100%;
+  }
+  #playButton {
+    width: 100%;
+  }
+}
+
+.race-btn, .round-btn{
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border: 2px solid #ff6600;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.race-btn.selected, .round-btn.selected{
+  background: #ff6600;
+  color: #121212;
+}

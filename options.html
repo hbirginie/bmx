@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Options</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Options</h1>
+  </header>
+
+  <p id="participantCount" style="margin-bottom: 30px; font-size: 1.2rem; color: #fff;"></p>
+
+  <div class="input-container" style="flex-direction: column; align-items: stretch; gap: 20px;">
+    
+    <!-- Choix du nombre de races -->
+<div style="text-align: center;">
+  <p style="margin-bottom: 10px; font-size: 1.2rem;">Nombre de races :</p>
+  <div id="raceButtons" style="display: flex; gap: 10px; justify-content: center;">
+    <button class="race-btn" data-value="2">2</button>
+    <button class="race-btn" data-value="3">3</button>
+    <button class="race-btn" data-value="4">4</button>
+    <button class="race-btn" data-value="5">5</button>
+  </div>
+</div>
+
+<!-- Choix du nombre de manches -->
+<div style="text-align: center; margin-top: 20px;">
+  <p style="margin-bottom: 10px; font-size: 1.2rem;">Nombre de manches :</p>
+  <div id="roundButtons" style="display: flex; gap: 10px; justify-content: center;">
+    <button class="round-btn" data-value="1">1</button>
+    <button class="round-btn" data-value="2">2</button>
+    <button class="round-btn" data-value="3">3</button>
+  </div>
+</div>
+
+
+    <button id="startGameBtn">🚴‍♂️ Création des races</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const players = JSON.parse(localStorage.getItem('players') || '[]');
+        const participantCount = players.length;
+
+        const participantCountElement = document.getElementById('participantCount');
+        participantCountElement.innerHTML = `Il y a <strong>${participantCount}</strong> participant${participantCount > 1 ? 's' : ''}`;
+    
+        let selectedRace = null;
+        let selectedRound = null;
+
+        const raceButtons = document.querySelectorAll('.race-btn');
+        const roundButtons = document.querySelectorAll('.round-btn');
+
+        raceButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+            raceButtons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedRace = btn.dataset.value;
+            });
+        });
+
+        roundButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+            roundButtons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedRound = btn.dataset.value;
+            });
+        });
+
+        const startGameBtn = document.getElementById('startGameBtn');
+
+        startGameBtn.onclick = () => {
+            if (!selectedRace) {
+                alert("Choisis un nombre de races avant de continuer.");
+                return;
+            }
+            if (!selectedRound) {
+                alert("Choisis un nombre de manches avant de continuer.");
+                return;
+            }
+
+            localStorage.setItem('raceCount', selectedRace);
+            localStorage.setItem('roundCount', selectedRound);
+
+            window.location.href = 'game.html';
+        };
+    });
+  </script>
+
+
+
+</body>
+</html>
