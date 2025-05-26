@@ -3,36 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Manches - BMX TIME</title>
+  <title>Manches - Canejan BMX Club</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    #playerList li {
-      cursor: grab;
-    }
-    #playerList li.dragging {
-      opacity: 0.5;
-    }
-    .btn-container {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
+    .manche {
       margin-bottom: 30px;
+      border: 2px solid #ff6600;
+      padding: 15px;
+      border-radius: 15px;
+      min-width: 200px;
+    }
+    .race {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #222;
+      border-radius: 12px;
+      min-width: 200px;
+    }
+    .race h4 {
+      margin: 0 0 10px 0;
+      color: #ff6600;
+      min-width: 200px;
+    }
+    ul.draggable-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      min-width: 200px;
+    }
+    ul.draggable-list li {
+      background: #333;
+      margin-bottom: 8px;
+      padding: 10px 15px;
+      border-radius: 25px;
+      cursor: grab;
+      user-select: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 8px #ff66004d;
+      transition: background-color 0.2s ease;
+      min-width: 200px;
+    }
+    ul.draggable-list li.dragging {
+      opacity: 0.6;
+      cursor: grabbing;
+      background-color: #ff6600;
+      box-shadow: 0 4px 12px #ff6600cc;
+      min-width: 200px;
+    }
+    button#validateBtn {
+      margin-top: 40px;
+      padding: 16px 40px;
+      background: #ff6600;
+      border: none;
+      border-radius: 40px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #121212;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      width: 220px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button#validateBtn:hover {
+      background-color: #ffa040;
     }
   </style>
 </head>
 <body>
-  <main>
-    <div class="btn-container">
-      <button id="shuffleBtn">🔀 Mélanger</button>
-      <button id="validateBtn">✅ Valider</button>
-    </div>
 
-    <div id="info"></div>
-    <ul id="playerList"></ul>
-    <button id="validateBtn">✅ Valider</button>
-  </main>
+  <header>
+    <h1>Répartition des manches</h1>
+  </header>
 
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <div id="manchesContainer"></div>
+
+  <button id="validateBtn">Valider les résultats</button>
+
   <script src="manches.js"></script>
 </body>
 </html>

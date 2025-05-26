@@ -1,50 +1,169 @@
-const playerList = document.getElementById('playerList');
-const shuffleBtn = document.getElementById('shuffleBtn');
+// --- Récupérer les données depuis localStorage
+const players = JSON.parse(localStorage.getItem('players') || '[]');
+const raceCount = parseInt(localStorage.getItem('raceCount') || '1');
+const roundCount = parseInt(localStorage.getItem('roundCount') || '1');
+
+if (players.length === 0) {
+  alert("Aucun joueur trouvé dans le localStorage.");
+  throw new Error("Aucun joueur.");
+}
+
+const manchesContainer = document.getElementById('manchesContainer');
 const validateBtn = document.getElementById('validateBtn');
-const infoDiv = document.getElementById('info');
+const scoresResult = document.getElementById('scoresResult');
 
-let players = JSON.parse(localStorage.getItem('players')) || [];
-const raceCount = parseInt(localStorage.getItem('raceCount')) || 0;
-const roundCount = parseInt(localStorage.getItem('roundCount')) || 0;
-
-infoDiv.innerHTML = `<p><strong>Manches (Races) :</strong> ${raceCount} &nbsp;&nbsp; <strong>Tours (Rounds) :</strong> ${roundCount}</p>`;
-
+// Fonction pour mélanger un tableau (Fisher-Yates)
 function shuffle(array) {
-  for (let i = array.length -1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i+1));
-    [array[i], array[j]] = [array[j], array[i]];
+  const arr = [...array];
+  for (let i = arr.length -1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i +1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+  return arr;
 }
 
-function renderPlayers() {
-  playerList.innerHTML = '';
-  players.forEach((name, index) => {
+// Fonction pour répartir les joueurs aléatoirement dans R groupes équilibrés
+function repartitionAleatoire(players, racesCount) {
+  const shuffled = shuffle(players);
+  const groupes = Array.from({length: racesCount}, () => []);
+  shuffled.forEach((player, i) => {
+    groupes[i % racesCount].push(player);
+  });
+  return groupes;
+}
+
+// Générer la structure manches -> courses -> joueurs
+const manches = [];
+for (let r = 0; r < roundCount; r++) {
+  manches.push(repartitionAleatoire(players, raceCount));
+}
+
+// --- Affichage et Drag & Drop ---
+
+/**
+ * Crée une liste draggable (ul) avec les participants d'une course
+ * @param {string[]} participants 
+ * @param {string} mancheId 
+ * @param {string} raceId 
+ * @returns {HTMLElement} ul
+ */
+function createDraggableList(participants, mancheId, raceId) {
+  const ul = document.createElement('ul');
+  ul.className = 'draggable-list';
+  ul.dataset.manche = mancheId;
+  ul.dataset.race = raceId;
+  
+  participants.forEach((player) => {
     const li = document.createElement('li');
-    li.textContent = `${index + 1}. ${name}`;
-    playerList.appendChild(li);
+    li.textContent = player;
+    li.draggable = true;
+    ul.appendChild(li);
   });
-
-  enableDragAndDrop();
+  
+  // Drag & drop events
+  let dragSrcEl = null;
+  
+  ul.addEventListener('dragstart', (e) => {
+    dragSrcEl = e.target;
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', e.target.textContent);
+  });
+  
+  ul.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const afterElement = getDragAfterElement(ul, e.clientY);
+    const dragging = document.querySelector('.dragging');
+    if (!dragging) return;
+    if (afterElement == null) {
+      ul.appendChild(dragging);
+    } else {
+      ul.insertBefore(dragging, afterElement);
+    }
+  });
+  
+  ul.addEventListener('dragend', (e) => {
+    e.target.classList.remove('dragging');
+  });
+  
+  return ul;
 }
 
-function enableDragAndDrop() {
-  Sortable.create(playerList, {
-    animation: 150,
-    ghostClass: 'dragging',
+// Helper pour trouver l'élément après lequel insérer pendant drag
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+  
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element || null;
+}
+
+// Affichage complet des manches et races
+function renderManches() {
+  manchesContainer.innerHTML = '';
+  manches.forEach((manche, mancheIndex) => {
+    const mancheDiv = document.createElement('div');
+    mancheDiv.className = 'manche';
+    mancheDiv.id = `manche-${mancheIndex+1}`;
+    mancheDiv.innerHTML = `<h3>Manche ${mancheIndex+1}</h3>`;
+    
+    manche.forEach((race, raceIndex) => {
+      const raceDiv = document.createElement('div');
+      raceDiv.className = 'race';
+      raceDiv.id = `manche${mancheIndex+1}-race${raceIndex+1}`;
+      raceDiv.innerHTML = `<h4>Race ${raceIndex+1}</h4>`;
+      raceDiv.appendChild(createDraggableList(race, mancheIndex+1, raceIndex+1));
+      mancheDiv.appendChild(raceDiv);
+    });
+    
+    manchesContainer.appendChild(mancheDiv);
   });
 }
 
-shuffleBtn.addEventListener('click', () => {
-  shuffle(players);
-  renderPlayers();
-});
+renderManches();
+
+// Calcul des points pour une course (1 pour 1er, N pour dernier)
+function attribuerPoints(nombreParticipants) {
+  const points = [];
+  for(let i=1; i<=nombreParticipants; i++) {
+    points.push(i);
+  }
+  return points;
+}
+
+// Calcul des scores globaux par joueur, en lisant l’ordre final dans le DOM
+function calculerScores() {
+  const scoresParJoueur = {};
+  
+  manches.forEach((_, mancheIndex) => {
+    for(let raceIndex=0; raceIndex < raceCount; raceIndex++) {
+      const ul = document.querySelector(`#manche-${mancheIndex+1} #manche${mancheIndex+1}-race${raceIndex+1} ul`);
+      if (!ul) continue;
+      const participants = [...ul.querySelectorAll('li')].map(li => li.textContent);
+      const points = attribuerPoints(participants.length);
+      
+      participants.forEach((joueur, pos) => {
+        if (!scoresParJoueur[joueur]) scoresParJoueur[joueur] = 0;
+        scoresParJoueur[joueur] += points[pos];
+      });
+    }
+  });
+  
+  return scoresParJoueur;
+}
 
 validateBtn.addEventListener('click', () => {
-  const newOrder = Array.from(playerList.children).map(li =>
-    li.textContent.replace(/^\d+\.\s*/, '')
-  );
-  localStorage.setItem('manchesResults', JSON.stringify(newOrder));
-  alert("Classement des manches validé !");
-});
+  const scores = calculerScores();
 
-renderPlayers();
+  // Stocker dans localStorage
+  localStorage.setItem('finalScores', JSON.stringify(scores));
+
+  // Redirection vers resultats_manches.html
+  window.location.href = 'resultats_manches.html';
+});
