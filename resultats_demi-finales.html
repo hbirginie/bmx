@@ -102,17 +102,44 @@
 
     // Création des finales
     document.getElementById('createFinalsBtn').addEventListener('click', () => {
-      const finaleA = sortedResults.slice(0, 8).map(entry => entry[0]);
-      const finaleB = sortedResults.slice(8).map(entry => entry[0]);
+    const consolantesActive = localStorage.getItem('consolantes') === 'true';
 
-      const finales = {
-        finaleA,
-        finaleB
-      };
+    // Utiliser les résultats des demi-finales pour A et B
+    const finaleA = sortedResults.slice(0, 8).map(entry => entry[0]);
+    const finaleB = sortedResults.slice(8, 16).map(entry => entry[0]);
 
-      localStorage.setItem('finales', JSON.stringify(finales));
-      window.location.href = 'finales.html';
-    });
+    const finales = {
+      finaleA,
+      finaleB
+    };
+
+    if (consolantesActive) {
+      // Charger les scores de manches pour les consolantes
+      const mancheScores = JSON.parse(localStorage.getItem('finalScores') || '{}');
+      const sortedPlayers = Object.entries(mancheScores)
+        .sort((a, b) => a[1] - b[1])  // tri croissant (meilleur score d'abord)
+        .map(([name]) => name);
+
+      // On récupère à partir du 17e
+      const autres = sortedPlayers.slice(16); // index 16 = 17e place
+
+      const groupes = Math.ceil(autres.length / 8);
+      for (let i = 0; i < groupes; i++) {
+        const debut = i * 8;
+        const fin = debut + 8;
+        const finalistes = autres.slice(debut, fin);
+        const label = `finale${String.fromCharCode(67 + i)}`; // C, D, E...
+        finales[label] = finalistes;
+      }
+    }
+
+    localStorage.setItem('finales', JSON.stringify(finales));
+
+    localStorage.setItem('extendedFinales', localStorage.getItem('consolantes') || 'false');
+
+    window.location.href = 'finales.html';
+  });
+
   </script>
 </body>
 </html>

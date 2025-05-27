@@ -38,6 +38,14 @@
   </div>
 </div>
 
+<!-- Toggle stylisé pour les consolantes -->
+<div style="text-align: center; margin-top: 30px;">
+  <p style="margin-bottom: 10px; font-size: 1.2rem;">Activer les consolantes :</p>
+  <label class="switch">
+    <input type="checkbox" id="consolantesToggle" />
+    <span class="slider round"></span>
+  </label>
+</div>
 
     <button id="startBtn" style="margin-top: 40px;">🚴‍♂️ Création des races</button>
   </div>
@@ -70,6 +78,16 @@
             btn.classList.add('selected');
             selectedRound = btn.dataset.value;
             });
+        });
+
+        const consolantesToggle = document.getElementById('consolantesToggle');
+
+        const savedConsolantes = localStorage.getItem('consolantes') === 'true';
+        consolantesToggle.checked = savedConsolantes;
+
+        consolantesToggle.addEventListener('change', () => {
+          const isChecked = consolantesToggle.checked;
+          localStorage.setItem('consolantes', isChecked);
         });
 
         const startBtn = document.getElementById('startBtn');

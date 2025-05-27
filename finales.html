@@ -23,6 +23,7 @@
       border-radius: 12px;
       border: 2px solid #ff6600;
       max-width: 600px;
+      min-width: 200px;
     }
     .finale h2 {
       color: #ff6600;
@@ -66,18 +67,9 @@
 <body>
   <h1>Finales</h1>
 
-  <div class="finale">
-    <h2>Finale A</h2>
-    <ul class="draggable-list" id="finaleA"></ul>
-  </div>
-
-  <div class="finale">
-    <h2>Finale B</h2>
-    <ul class="draggable-list" id="finaleB"></ul>
-  </div>
-
   <button id="validateBtn">Valider les résultats</button>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
   <script src="finales.js"></script>
 </body>
 </html>

@@ -1,67 +1,74 @@
-const scores = JSON.parse(localStorage.getItem('demiFinalesScores') || '{}');
-const sorted = Object.entries(scores).sort((a, b) => a[1] - b[1]);
+// Récupération des finales dans le localStorage
+const finales = JSON.parse(localStorage.getItem('finales') || '{}');
 
-const finaleA = sorted.slice(0, 8).map(([nom]) => nom);
-const finaleB = sorted.slice(8).map(([nom]) => nom);
+// Récupération de l'option (boolean, false par défaut)
+const extendedFinalesEnabled = JSON.parse(localStorage.getItem('extendedFinales') || 'false');
 
-const finaleAList = document.getElementById('finaleA');
-const finaleBList = document.getElementById('finaleB');
+// Conteneur principal où on va injecter les finales
+const container = document.body;  // ou un élément précis si tu préfères
 
-function createDraggableList(listElement, participants) {
-  participants.forEach(name => {
+// Liste des finales à afficher (toujours A et B, puis C, D, E si option activée)
+const baseFinales = ['finaleA', 'finaleB'];
+const extraFinales = ['finaleC', 'finaleD', 'finaleE'];
+const finalesToDisplay = extendedFinalesEnabled
+  ? [...baseFinales, ...extraFinales]
+  : baseFinales;
+
+// Fonction pour créer une section finale complète
+function createFinaleSection(finaleKey) {
+  if (!finales[finaleKey]) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'finale';
+  wrapper.style.minWidth = '200px';
+
+  const h2 = document.createElement('h2');
+  // Met "Finale" avec majuscule seulement au début + lettre finale majuscule (ex: Finale A)
+  h2.textContent = 'Finale ' + finaleKey.slice(-1).toUpperCase();
+
+  const ul = document.createElement('ul');
+  ul.className = 'draggable-list';
+  ul.id = finaleKey;
+
+  wrapper.appendChild(h2);
+  wrapper.appendChild(ul);
+
+  // Insert avant le bouton valider (présumé existant dans la page)
+  const validateBtn = document.getElementById('validateBtn');
+  container.insertBefore(wrapper, validateBtn);
+
+  // Remplit la liste avec les participants
+  finales[finaleKey].forEach(name => {
     const li = document.createElement('li');
     li.textContent = name;
-    li.draggable = true;
-    listElement.appendChild(li);
-  });
-
-  let dragSrc = null;
-
-  listElement.addEventListener('dragstart', e => {
-    dragSrc = e.target;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-  });
-
-  listElement.addEventListener('dragover', e => {
-    e.preventDefault();
-    const dragging = document.querySelector('.dragging');
-    const afterElement = getDragAfterElement(listElement, e.clientY);
-    if (!dragging) return;
-    if (afterElement == null) {
-      listElement.appendChild(dragging);
-    } else {
-      listElement.insertBefore(dragging, afterElement);
-    }
-  });
-
-  listElement.addEventListener('dragend', e => {
-    e.target.classList.remove('dragging');
+    ul.appendChild(li);
   });
 }
 
-function getDragAfterElement(container, y) {
-  const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    return offset < 0 && offset > closest.offset
-      ? { offset, element: child }
-      : closest;
-  }, { offset: Number.NEGATIVE_INFINITY }).element || null;
-}
+// Crée toutes les sections finales visibles
+finalesToDisplay.forEach(createFinaleSection);
 
-createDraggableList(finaleAList, finaleA);
-createDraggableList(finaleBList, finaleB);
+// Initialise Sortable.js sur chaque liste de finale
+finalesToDisplay.forEach(finaleKey => {
+  const ul = document.getElementById(finaleKey);
+  if (!ul) return;
 
+  Sortable.create(ul, {
+    animation: 150,
+    ghostClass: 'dragging',
+    dragClass: 'dragging',
+  });
+});
+
+// Bouton valider pour sauvegarder les résultats
 document.getElementById('validateBtn').addEventListener('click', () => {
-  const finaleAResult = [...finaleAList.querySelectorAll('li')].map(li => li.textContent);
-  const finaleBResult = [...finaleBList.querySelectorAll('li')].map(li => li.textContent);
+  const results = {};
+  finalesToDisplay.forEach(finaleKey => {
+    const ul = document.getElementById(finaleKey);
+    if (!ul) return;
+    results[finaleKey] = [...ul.querySelectorAll('li')].map(li => li.textContent);
+  });
 
-  localStorage.setItem('finalesResult', JSON.stringify({
-    finaleA: finaleAResult,
-    finaleB: finaleBResult
-  }));
-
+  localStorage.setItem('finalesResult', JSON.stringify(results));
   window.location.href = 'resultats_finales.html';
 });
