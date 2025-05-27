@@ -98,13 +98,7 @@
 
   <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
 
-  <script>
-    const finalesResult = JSON.parse(localStorage.getItem('finalesResult') || '{}');
-    const finaleA = finalesResult.finaleA || [];
+  <script src="resultats_finales.js"></script>
 
-    document.getElementById('firstPlace').textContent = finaleA[0] || "N/A";
-    document.getElementById('secondPlace').textContent = finaleA[1] || "N/A";
-    document.getElementById('thirdPlace').textContent = finaleA[2] || "N/A";
-  </script>
 </body>
 </html>
