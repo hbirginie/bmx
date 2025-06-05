@@ -5,42 +5,33 @@ document.getElementById('firstPlace').textContent = finaleA[0] || "N/A";
 document.getElementById('secondPlace').textContent = finaleA[1] || "N/A";
 document.getElementById('thirdPlace').textContent = finaleA[2] || "N/A";
 
-const showBtn = document.getElementById('showAllBtn');
-const hideBtn = document.getElementById('hideAllBtn');
-const container = document.getElementById('allResultsContainer');
+const toggleBtn = document.getElementById('toggleBtn');
+const allResultsDiv = document.getElementById('allResults');
+let visible = false;
 
-showBtn.addEventListener('click', () => {
-  container.innerHTML = '';
+toggleBtn.addEventListener('click', () => {
+    visible = !visible;
+    allResultsDiv.style.display = visible ? 'block' : 'none';
+    toggleBtn.textContent = visible ? 'Cacher les résultats' : 'Afficher tous les résultats';
 
-  const finalesResult = JSON.parse(localStorage.getItem('finalesResult') || '{}');
-  const finaleKeys = Object.keys(finalesResult).sort(); // finaleA, finaleB, etc.
+    if (visible && allResultsDiv.innerHTML.trim() === '') {
+    for (const [finaleName, players] of Object.entries(finalesResult)) {
+        const block = document.createElement('div');
+        block.className = 'finale-block';
 
-  finaleKeys.forEach(key => {
-    const div = document.createElement('div');
-    div.className = 'finale-section';
+        const h2 = document.createElement('h2');
+        h2.textContent = 'Finale ' + finaleName.slice(-1).toUpperCase();
+        block.appendChild(h2);
 
-    const title = document.createElement('h2');
-    title.textContent = 'Finale ' + key.slice(-1).toUpperCase();
-    div.appendChild(title);
+        const ul = document.createElement('ul');
+        players.forEach((name, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${name}`;
+        ul.appendChild(li);
+        });
 
-    const ol = document.createElement('ol');
-    finalesResult[key].forEach(nom => {
-      const li = document.createElement('li');
-      li.textContent = nom;
-      ol.appendChild(li);
-    });
-
-    div.appendChild(ol);
-    container.appendChild(div);
-  });
-
-  container.style.display = 'block';
-  showBtn.style.display = 'none';
-  hideBtn.style.display = 'inline-block';
-});
-
-hideBtn.addEventListener('click', () => {
-  container.style.display = 'none';
-  hideBtn.style.display = 'none';
-  showBtn.style.display = 'inline-block';
+        block.appendChild(ul);
+        allResultsDiv.appendChild(block);
+    }
+    }
 });

@@ -12,57 +12,49 @@
       text-align: center;
       padding: 40px 20px;
     }
+
     h1 {
       color: #ff6600;
       margin-bottom: 40px;
     }
+
     .podium {
       display: flex;
       justify-content: center;
-      align-items: flex-end;
-      gap: 30px;
-      max-width: 600px;
-      margin: auto;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
     }
-    .podium-place {
-      background: #222;
-      border-radius: 15px 15px 0 0;
-      width: 120px;
-      padding: 10px 0;
+
+    .circle {
+      border-radius: 50%;
+      width: 130px;
+      height: 130px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      color: #fff;
-    }
-    .podium-place.first {
-      height: 220px;
-      background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
-      font-weight: 900;
-      font-size: 1.4rem;
-      color: #000;
-    }
-    .podium-place.second {
-      height: 170px;
-      background: linear-gradient(180deg, #c0c0c0 0%, #808080 100%);
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: #000;
-    }
-    .podium-place.third {
-      height: 140px;
-      background: linear-gradient(180deg, #cd7f32 0%, #8b4513 100%);
-      font-weight: 700;
+      font-weight: bold;
       font-size: 1.1rem;
       color: #000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
-    .place-label {
-      margin-top: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #ff6600;
+
+    .first {
+      background: linear-gradient(to bottom, #ffd700, #b8860b);
+      font-size: 1.3rem;
     }
-    button#homeBtn {
-      margin-top: 50px;
+
+    .second {
+      background: linear-gradient(to bottom, #c0c0c0, #808080);
+    }
+
+    .third {
+      background: linear-gradient(to bottom, #cd7f32, #8b4513);
+    }
+
+    #homeBtn, #toggleBtn {
+      margin-top: 30px;
       padding: 14px 40px;
       background: #ff6600;
       border: none;
@@ -72,90 +64,62 @@
       color: #121212;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      margin-right: 10px;
     }
-    button#homeBtn:hover {
+
+    #homeBtn:hover, #toggleBtn:hover {
       background-color: #ffa040;
     }
-    #showAllBtn {
-      margin-top: 30px;
-      padding: 12px 30px;
-      background: #333;
-      border: 2px solid #ff6600;
-      color: #ff6600;
-      border-radius: 30px;
-      font-size: 16px;
-      cursor: pointer;
+
+    #allResults {
+      margin-top: 40px;
+      display: none;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    #showAllBtn:hover {
-      background: #ff6600;
-      color: #121212;
-    }
-    #allResultsContainer {
-      text-align: left;
-      max-width: 600px;
-      margin: 40px auto;
-    }
-    .finale-section {
-      margin-bottom: 30px;
-      background: #1e1e1e;
+
+    .finale-block {
+      background: #222;
       padding: 20px;
       border-radius: 12px;
-      border-left: 5px solid #ff6600;
+      margin: 20px auto;
+      max-width: 300px;
+      flex: 1 1 280px;
+      box-sizing: border-box;
     }
-    .finale-section h2 {
-      color: #ffa040;
+
+    .finale-block h2 {
+      color: #ff6600;
       margin-bottom: 10px;
     }
-    .finale-section ol {
-      padding-left: 20px;
+
+    .finale-block ul {
+      list-style: none;
+      padding-left: 0;
     }
-    .finale-section li {
-      margin: 6px 0;
-      color: #fff;
-    }
-    #hideAllBtn {
-      margin-left: 20px;
-      padding: 12px 30px;
-      background: #333;
-      border: 2px solid #ff6600;
-      color: #ff6600;
-      border-radius: 30px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    #hideAllBtn:hover {
-      background: #ff6600;
-      color: #121212;
+
+    .finale-block li {
+      padding: 5px 0;
+      border-bottom: 1px solid #444;
     }
   </style>
 </head>
 <body>
   <h1>Podium Finale A</h1>
+  
   <div class="podium" id="podiumContainer">
-    <div class="podium-place second">
-      <div id="secondPlace">--</div>
-      <div class="place-label">2ème</div>
-    </div>
-    <div class="podium-place first">
-      <div id="firstPlace">--</div>
-      <div class="place-label">1er</div>
-    </div>
-    <div class="podium-place third">
-      <div id="thirdPlace">--</div>
-      <div class="place-label">3ème</div>
-    </div>
+    <div class="circle second">🥈<br><span id="secondPlace">--</span></div>
+    <div class="circle first">🥇<br><span id="firstPlace">--</span></div>
+    <div class="circle third">🥉<br><span id="thirdPlace">--</span></div>
   </div>
 
-  <div style="margin-top: 30px;">
-    <button id="showAllBtn">Afficher tous les résultats</button>
-    <button id="hideAllBtn" style="display: none;">Masquer les résultats</button>
-  </div>
-
-  <div id="allResultsContainer" style="display: none; margin-top: 40px;"></div>
-
+  <button id="toggleBtn">Afficher tous les résultats</button>
   <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
 
-  <script src="resultats_finales.js"></script>
+  <div id="allResults"></div>
 
+  <script src="resultats_finales.js"></script>
 </body>
 </html>
