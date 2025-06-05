@@ -29,7 +29,6 @@
       border-radius: 15px 15px 0 0;
       width: 120px;
       padding: 10px 0;
-      box-shadow: 0 4px 12px #ff660099;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -77,6 +76,57 @@
     button#homeBtn:hover {
       background-color: #ffa040;
     }
+    #showAllBtn {
+      margin-top: 30px;
+      padding: 12px 30px;
+      background: #333;
+      border: 2px solid #ff6600;
+      color: #ff6600;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #showAllBtn:hover {
+      background: #ff6600;
+      color: #121212;
+    }
+    #allResultsContainer {
+      text-align: left;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+    .finale-section {
+      margin-bottom: 30px;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 5px solid #ff6600;
+    }
+    .finale-section h2 {
+      color: #ffa040;
+      margin-bottom: 10px;
+    }
+    .finale-section ol {
+      padding-left: 20px;
+    }
+    .finale-section li {
+      margin: 6px 0;
+      color: #fff;
+    }
+    #hideAllBtn {
+      margin-left: 20px;
+      padding: 12px 30px;
+      background: #333;
+      border: 2px solid #ff6600;
+      color: #ff6600;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #hideAllBtn:hover {
+      background: #ff6600;
+      color: #121212;
+    }
   </style>
 </head>
 <body>
@@ -95,6 +145,13 @@
       <div class="place-label">3ème</div>
     </div>
   </div>
+
+  <div style="margin-top: 30px;">
+    <button id="showAllBtn">Afficher tous les résultats</button>
+    <button id="hideAllBtn" style="display: none;">Masquer les résultats</button>
+  </div>
+
+  <div id="allResultsContainer" style="display: none; margin-top: 40px;"></div>
 
   <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
 
