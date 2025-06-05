@@ -28,8 +28,8 @@
 
     .circle {
       border-radius: 50%;
-      width: 130px;
-      height: 130px;
+      width: 100px;
+      height: 100px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -53,8 +53,12 @@
       background: linear-gradient(to bottom, #cd7f32, #8b4513);
     }
 
-    #homeBtn, #toggleBtn {
+    .button-group {
       margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    #toggleBtn, #homeBtn {
       padding: 14px 40px;
       background: #ff6600;
       border: none;
@@ -64,10 +68,13 @@
       color: #121212;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      margin-right: 10px;
+      width: 90%;
+      max-width: 300px;
+      margin: 10px auto;
+      display: block;
     }
 
-    #homeBtn:hover, #toggleBtn:hover {
+    #toggleBtn:hover, #homeBtn:hover {
       background-color: #ffa040;
     }
 
@@ -115,10 +122,13 @@
     <div class="circle third">🥉<br><span id="thirdPlace">--</span></div>
   </div>
 
-  <button id="toggleBtn">Afficher tous les résultats</button>
-  <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
+  <div class="button-group">
+    <button id="toggleBtn">Afficher tous les résultats</button>
+  </div>
 
   <div id="allResults"></div>
+
+  <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
 
   <script src="resultats_finales.js"></script>
 </body>
