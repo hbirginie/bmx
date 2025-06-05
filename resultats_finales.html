@@ -58,7 +58,7 @@
       margin-bottom: 30px;
     }
 
-    #toggleBtn, #homeBtn {
+    #toggleBtn, #homeBtn, #exportBtn {
       padding: 14px 40px;
       background: #ff6600;
       border: none;
@@ -74,14 +74,12 @@
       display: block;
     }
 
-    #toggleBtn:hover, #homeBtn:hover {
+    #toggleBtn:hover, #homeBtn:hover, #exportBtn:hover {
       background-color: #ffa040;
     }
 
     #allResults {
-      margin-top: 40px;
-      display: none;
-      display: flex;
+      margin-top: 30px;
       gap: 20px;
       justify-content: center;
       flex-wrap: wrap;
@@ -122,14 +120,14 @@
     <div class="circle third">🥉<br><span id="thirdPlace">--</span></div>
   </div>
 
-  <div class="button-group">
-    <button id="toggleBtn">Afficher tous les résultats</button>
-  </div>
-
   <div id="allResults"></div>
 
-  <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
-
+  <div class="button-group">
+    <button id="toggleBtn">Afficher tous les résultats</button>
+    <button id="exportBtn">Exporter en CSV</button>
+    <button id="homeBtn" onclick="window.location.href='index.html'">Retour à l'accueil</button>
+  </div>
+  
   <script src="resultats_finales.js"></script>
 </body>
 </html>
