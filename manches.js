@@ -1,4 +1,3 @@
-// Récupérer les données depuis localStorage
 const players = JSON.parse(localStorage.getItem('players') || '[]');
 const raceCount = parseInt(localStorage.getItem('raceCount') || '1');
 const roundCount = parseInt(localStorage.getItem('roundCount') || '1');
@@ -8,133 +7,174 @@ if (players.length === 0) {
   throw new Error("Aucun joueur.");
 }
 
-const manchesContainer = document.getElementById('manchesContainer');
+const raceDisplay = document.getElementById('raceDisplay');
 const validateBtn = document.getElementById('validateBtn');
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn'); // <-- nouveau
 
-// Fonction pour mélanger un tableau (Fisher-Yates)
+let currentManche = 0;
+let currentRace = 0;
+
 function shuffle(array) {
   const arr = [...array];
-  for (let i = arr.length -1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i +1));
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
 }
 
-// Répartir les joueurs aléatoirement dans R groupes équilibrés
 function repartitionAleatoire(players, racesCount) {
   const shuffled = shuffle(players);
-  const groupes = Array.from({length: racesCount}, () => []);
+  const groupes = Array.from({ length: racesCount }, () => []);
   shuffled.forEach((player, i) => {
     groupes[i % racesCount].push(player);
   });
   return groupes;
 }
 
-// Générer la structure manches -> courses -> joueurs
 const manches = [];
 for (let r = 0; r < roundCount; r++) {
   manches.push(repartitionAleatoire(players, raceCount));
 }
 
-// --- Affichage et Drag & Drop avec SortableJS ---
-
-/**
- * Crée une liste draggable (ul) avec les participants d'une course
- * @param {string[]} participants 
- * @param {string} mancheId 
- * @param {string} raceId 
- * @returns {HTMLElement} ul
- */
-function createDraggableList(participants, mancheId, raceId) {
+function createDraggableList(participants) {
   const ul = document.createElement('ul');
   ul.className = 'draggable-list';
-  ul.dataset.manche = mancheId;
-  ul.dataset.race = raceId;
-  
-  participants.forEach((player) => {
+
+  participants.forEach(player => {
     const li = document.createElement('li');
     li.textContent = player;
     ul.appendChild(li);
   });
-  
-  // Initialiser SortableJS sur la liste
+
   Sortable.create(ul, {
     animation: 150,
-    ghostClass: 'dragging', // utilise ta classe CSS existante pour l'effet visuel
-    // options supplémentaires si besoin...
+    ghostClass: 'dragging'
   });
-  
+
   return ul;
 }
 
-// Affichage complet des manches et courses
-function renderManches() {
-  manchesContainer.innerHTML = '';
-  manches.forEach((manche, mancheIndex) => {
-    const mancheDiv = document.createElement('div');
-    mancheDiv.className = 'manche';
-    mancheDiv.id = `manche-${mancheIndex+1}`;
-    mancheDiv.innerHTML = `<h3>Manche ${mancheIndex+1}</h3>`;
-    
-    manche.forEach((race, raceIndex) => {
-      const raceDiv = document.createElement('div');
-      raceDiv.className = 'race';
-      raceDiv.id = `manche${mancheIndex+1}-race${raceIndex+1}`;
-      raceDiv.innerHTML = `<h4>Race ${raceIndex+1}</h4>`;
-      raceDiv.appendChild(createDraggableList(race, mancheIndex+1, raceIndex+1));
-      mancheDiv.appendChild(raceDiv);
-    });
-    
-    manchesContainer.appendChild(mancheDiv);
-  });
+function renderCurrentRace() {
+  const manche = manches[currentManche];
+  const race = manche[currentRace];
+  raceDisplay.innerHTML = '';
+
+  const container = document.createElement('div');
+  container.className = 'race-container';
+  container.innerHTML = `
+    <h3>Manche ${currentManche + 1}</h3>
+    <h4>Race ${currentRace + 1}</h4>
+  `;
+
+  container.appendChild(createDraggableList(race));
+  raceDisplay.appendChild(container);
+
+  const isFirstRace = currentManche === 0 && currentRace === 0;
+  const isLastRace = currentManche === manches.length - 1 && currentRace === manches[currentManche].length - 1;
+
+  // Bouton Précédent
+  prevBtn.style.display = isFirstRace ? 'none' : 'inline-block';
+
+  // Bouton Suivant
+  nextBtn.style.display = isLastRace ? 'none' : 'inline-block';
+
+  // Bouton Valider
+  validateBtn.style.display = isLastRace ? 'inline-block' : 'none';
 }
 
-renderManches();
 
-// Calcul des points pour une course (1 pour 1er, N pour dernier)
-function attribuerPoints(nombreParticipants) {
-  const points = [];
-  for(let i=1; i<=nombreParticipants; i++) {
-    points.push(i);
+function saveCurrentRace() {
+  const ul = document.querySelector('ul.draggable-list');
+  if (!ul) return;
+
+  const classement = [...ul.querySelectorAll('li')].map(li => li.textContent);
+  const key = `race${currentRace + 1}manche${currentManche + 1}`;
+
+  let allResults = JSON.parse(localStorage.getItem('allResults')) || {};
+  allResults[key] = classement;
+  localStorage.setItem('allResults', JSON.stringify(allResults));
+
+  console.log(`Sauvegardé : ${key}`, classement);
+}
+
+nextBtn.addEventListener('click', () => {
+  saveCurrentRace();
+
+  if (currentRace < manches[currentManche].length - 1) {
+    currentRace++;
+  } else if (currentManche < manches.length - 1) {
+    currentManche++;
+    currentRace = 0;
+  } else {
+    alert("Toutes les courses ont été vues.");
+    return;
   }
-  return points;
+
+  renderCurrentRace();
+});
+
+prevBtn.addEventListener('click', () => {
+  saveCurrentRace();
+
+  if (currentRace > 0) {
+    currentRace--;
+  } else if (currentManche > 0) {
+    currentManche--;
+    currentRace = manches[currentManche].length - 1;
+  } else {
+    alert("C'est la première course.");
+    return;
+  }
+
+  renderCurrentRace();
+});
+
+validateBtn.addEventListener('click', () => {
+  saveCurrentRace();
+
+  const scores = calculerScores();
+  localStorage.setItem('finalScores', JSON.stringify(scores));
+  window.location.href = 'resultats_manches.html';
+});
+
+function attribuerPoints(n) {
+  return Array.from({ length: n }, (_, i) => i + 1);
 }
 
-// Calcul des scores globaux par joueur
 function calculerScores() {
   const scoresParJoueur = {};
-  const classementParManche = {}; // { joueur: [position_m1, position_m2, ...] }
+  const classementParManche = {};
 
   manches.forEach((manche, mancheIndex) => {
     manche.forEach((_, raceIndex) => {
-      const ul = document.querySelector(`#manche-${mancheIndex + 1} #manche${mancheIndex + 1}-race${raceIndex + 1} ul`);
-      if (!ul) return;
+      const key = `race${raceIndex + 1}manche${mancheIndex + 1}`;
+      const classement = (JSON.parse(localStorage.getItem('allResults')) || {})[key];
+      if (!classement) return;
 
-      const participants = [...ul.querySelectorAll('li')].map(li => li.textContent);
-      const points = attribuerPoints(participants.length);
-
-      participants.forEach((joueur, pos) => {
-        // Initialisation
+      const points = attribuerPoints(classement.length);
+      classement.forEach((joueur, pos) => {
         if (!scoresParJoueur[joueur]) scoresParJoueur[joueur] = 0;
         if (!classementParManche[joueur]) classementParManche[joueur] = [];
 
         scoresParJoueur[joueur] += points[pos];
 
-        // Stocker la meilleure position du joueur dans cette manche
         if (!classementParManche[joueur][mancheIndex]) {
           classementParManche[joueur][mancheIndex] = points[pos];
         } else {
-          classementParManche[joueur][mancheIndex] = Math.min(classementParManche[joueur][mancheIndex], points[pos]);
+          classementParManche[joueur][mancheIndex] = Math.min(
+            classementParManche[joueur][mancheIndex],
+            points[pos]
+          );
         }
       });
     });
   });
 
-  // Stocker les 3 dernières positions (ou moins si moins de manches)
   const dernieresPositions = {};
   Object.entries(classementParManche).forEach(([joueur, classementArray]) => {
-    const reversed = [...classementArray].reverse(); // dernières manches d'abord
+    const reversed = [...classementArray].reverse();
     dernieresPositions[joueur] = reversed.slice(0, 3);
   });
 
@@ -142,13 +182,5 @@ function calculerScores() {
   return scoresParJoueur;
 }
 
-
-validateBtn.addEventListener('click', () => {
-  const scores = calculerScores();
-
-  // Stocker dans localStorage
-  localStorage.setItem('finalScores', JSON.stringify(scores));
-
-  // Redirection vers resultats_manches.html
-  window.location.href = 'resultats_manches.html';
-});
+// Démarrage
+renderCurrentRace();
