@@ -8,6 +8,7 @@
   <style>
     .container {
       padding: 20px;
+      min-width: 230px;
     }
     .demi {
       margin-bottom: 30px;
@@ -36,8 +37,13 @@
       opacity: 0.6;
       background-color: #ff6600;
     }
-    button#validateBtn {
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
       margin-top: 40px;
+    }
+    button {
       padding: 16px 40px;
       background: #ff6600;
       border: none;
@@ -48,12 +54,9 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       user-select: none;
-      width: 220px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+      width: 200px;
     }
-    button#validateBtn:hover {
+    button:hover {
       background-color: #ffa040;
     }
   </style>
@@ -65,11 +68,16 @@
       <h3>Demi-finale 1</h3>
       <ul id="demi1" class="draggable-list"></ul>
     </div>
-    <div class="demi">
+    <div class="demi" style="display:none;">
       <h3>Demi-finale 2</h3>
       <ul id="demi2" class="draggable-list"></ul>
     </div>
-    <button id="validateBtn">Valider les résultats</button>
+
+    <div class="btn-group">
+      <button id="nextBtn">Suivant</button>
+      <button id="validateBtn">Valider les résultats</button>
+    </div>
+  
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
