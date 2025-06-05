@@ -101,26 +101,47 @@ function attribuerPoints(nombreParticipants) {
   return points;
 }
 
-// Calcul des scores globaux par joueur, en lisant l’ordre final dans le DOM
+// Calcul des scores globaux par joueur
 function calculerScores() {
   const scoresParJoueur = {};
-  
-  manches.forEach((_, mancheIndex) => {
-    for(let raceIndex=0; raceIndex < raceCount; raceIndex++) {
-      const ul = document.querySelector(`#manche-${mancheIndex+1} #manche${mancheIndex+1}-race${raceIndex+1} ul`);
-      if (!ul) continue;
+  const classementParManche = {}; // { joueur: [position_m1, position_m2, ...] }
+
+  manches.forEach((manche, mancheIndex) => {
+    manche.forEach((_, raceIndex) => {
+      const ul = document.querySelector(`#manche-${mancheIndex + 1} #manche${mancheIndex + 1}-race${raceIndex + 1} ul`);
+      if (!ul) return;
+
       const participants = [...ul.querySelectorAll('li')].map(li => li.textContent);
       const points = attribuerPoints(participants.length);
-      
+
       participants.forEach((joueur, pos) => {
+        // Initialisation
         if (!scoresParJoueur[joueur]) scoresParJoueur[joueur] = 0;
+        if (!classementParManche[joueur]) classementParManche[joueur] = [];
+
         scoresParJoueur[joueur] += points[pos];
+
+        // Stocker la meilleure position du joueur dans cette manche
+        if (!classementParManche[joueur][mancheIndex]) {
+          classementParManche[joueur][mancheIndex] = points[pos];
+        } else {
+          classementParManche[joueur][mancheIndex] = Math.min(classementParManche[joueur][mancheIndex], points[pos]);
+        }
       });
-    }
+    });
   });
-  
+
+  // Stocker les 3 dernières positions (ou moins si moins de manches)
+  const dernieresPositions = {};
+  Object.entries(classementParManche).forEach(([joueur, classementArray]) => {
+    const reversed = [...classementArray].reverse(); // dernières manches d'abord
+    dernieresPositions[joueur] = reversed.slice(0, 3);
+  });
+
+  localStorage.setItem('dernieresPositions', JSON.stringify(dernieresPositions));
   return scoresParJoueur;
 }
+
 
 validateBtn.addEventListener('click', () => {
   const scores = calculerScores();
