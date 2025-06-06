@@ -23,7 +23,7 @@
       border-radius: 12px;
       border: 2px solid #ff6600;
       max-width: 600px;
-      min-width: 200px;
+      min-width: 230px;
     }
     .finale h2 {
       color: #ff6600;
@@ -45,8 +45,13 @@
       opacity: 0.6;
       background-color: #ff6600;
     }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
     button {
-      margin-top: 30px;
       padding: 16px 40px;
       background: #ff6600;
       border: none;
@@ -55,9 +60,6 @@
       font-weight: 900;
       color: #121212;
       cursor: pointer;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
     button:hover {
       background-color: #ffa040;
@@ -67,7 +69,13 @@
 <body>
   <h1>Finales</h1>
 
-  <button id="validateBtn">Valider les résultats</button>
+  <div id="finaleContainer"></div>
+
+  <div class="btn-group" id="navigation" style="display: none;">
+    <button id="prevBtn">Précédent</button>
+    <button id="nextBtn">Suivant</button>
+    <button id="validateBtn">Valider</button>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
   <script src="finales.js"></script>

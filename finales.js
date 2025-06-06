@@ -1,70 +1,96 @@
-// Récupération des finales dans le localStorage
 const finales = JSON.parse(localStorage.getItem('finales') || '{}');
-
-// Option consolantes (affiche la finale B ou pas)
 const extendedFinalesEnabled = JSON.parse(localStorage.getItem('extendedFinales') || 'false');
 
-// Conteneur principal où on va injecter les finales
-const container = document.body;
+const finaleKeys = Object.keys(finales).sort((a, b) => {
+  return b.localeCompare(a); // ordre inverse : E > D > ...
+});
 
-// Base : finale A uniquement
 const baseFinales = ['finaleA'];
-const extraFinales = ['finaleB', 'finaleC', 'finaleD', 'finaleE'];
-const finalesToDisplay = extendedFinalesEnabled
-  ? [...baseFinales, ...extraFinales]
-  : baseFinales;
+const finalesToDisplay = extendedFinalesEnabled ? finaleKeys : baseFinales;
 
-// Fonction pour créer une section finale complète
-function createFinaleSection(finaleKey) {
-  if (!finales[finaleKey]) return;
+const container = document.getElementById('finaleContainer');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const validateBtn = document.getElementById('validateBtn');
+const nav = document.getElementById('navigation');
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'finale';
+let currentIndex = 0;
+
+// Création des finales dynamiquement
+finalesToDisplay.forEach((key, index) => {
+  if (!finales[key]) return;
+
+  const section = document.createElement('div');
+  section.className = 'finale';
+  section.id = `section-${key}`;
+  section.style.display = index === 0 ? 'block' : 'none';
 
   const h2 = document.createElement('h2');
-  h2.textContent = 'Finale ' + finaleKey.slice(-1).toUpperCase();
+  h2.textContent = 'Finale ' + key.slice(-1).toUpperCase();
 
   const ul = document.createElement('ul');
   ul.className = 'draggable-list';
-  ul.id = finaleKey;
+  ul.id = key;
 
-  wrapper.appendChild(h2);
-  wrapper.appendChild(ul);
-
-  const validateBtn = document.getElementById('validateBtn');
-  container.insertBefore(wrapper, validateBtn);
-
-  finales[finaleKey].forEach(name => {
+  finales[key].forEach(name => {
     const li = document.createElement('li');
     li.textContent = name;
     ul.appendChild(li);
   });
-}
 
-// Crée les sections de finales
-finalesToDisplay.forEach(createFinaleSection);
-
-// Active le drag and drop
-finalesToDisplay.forEach(finaleKey => {
-  const ul = document.getElementById(finaleKey);
-  if (!ul) return;
+  section.appendChild(h2);
+  section.appendChild(ul);
+  container.appendChild(section);
 
   Sortable.create(ul, {
     animation: 150,
     ghostClass: 'dragging',
-    dragClass: 'dragging',
   });
 });
 
-// Sauvegarde des résultats à la validation
-document.getElementById('validateBtn').addEventListener('click', () => {
+// Afficher navigation si plus d'une finale
+if (finalesToDisplay.length >= 1) {
+  nav.style.display = 'flex';
+}
+
+// Mise à jour affichage
+function updateDisplay() {
+  finalesToDisplay.forEach((key, idx) => {
+    const section = document.getElementById(`section-${key}`);
+    section.style.display = idx === currentIndex ? 'block' : 'none';
+  });
+
+  prevBtn.style.display = currentIndex > 0 ? 'inline-block' : 'none';
+  nextBtn.style.display = currentIndex < finalesToDisplay.length - 1 ? 'inline-block' : 'none';
+  validateBtn.style.display = currentIndex === finalesToDisplay.length - 1 ? 'block' : 'none';
+}
+
+// Navigation
+prevBtn.addEventListener('click', () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    updateDisplay();
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (currentIndex < finalesToDisplay.length - 1) {
+    currentIndex++;
+    updateDisplay();
+  }
+});
+
+// Valider
+validateBtn.addEventListener('click', () => {
   const results = {};
-  finalesToDisplay.forEach(finaleKey => {
-    const ul = document.getElementById(finaleKey);
+  finalesToDisplay.forEach(key => {
+    const ul = document.getElementById(key);
     if (!ul) return;
-    results[finaleKey] = [...ul.querySelectorAll('li')].map(li => li.textContent);
+    results[key] = [...ul.querySelectorAll('li')].map(li => li.textContent);
   });
 
   localStorage.setItem('finalesResult', JSON.stringify(results));
   window.location.href = 'resultats_finales.html';
 });
+
+updateDisplay();
